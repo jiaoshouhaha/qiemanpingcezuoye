@@ -44,6 +44,13 @@
       border-bottom: 1px solid currentColor;
     }
     .source-top a:hover { color: var(--teal-dark); }
+    .source-top, .title-block h1, .title-block p, .thesis, .source-note, .ranking-card {
+      animation: introUp .75s cubic-bezier(.22, .8, .28, 1) both;
+    }
+    .title-block p { animation-delay: .08s; }
+    .thesis { animation-delay: .16s; }
+    .source-note { animation-delay: .24s; }
+    .ranking-card { animation-delay: .18s; }
     .hero {
       min-height: 86vh;
       display: grid;
@@ -104,7 +111,8 @@
     .rank-row:first-of-type { border-top: 0; }
     .rank-row strong { font-size: 18px; }
     .bar-track { height: 10px; background: #edf2f3; border-radius: 999px; overflow: hidden; margin-top: 7px; }
-    .bar-fill { height: 100%; width: calc(var(--score) / 5 * 100%); background: linear-gradient(90deg, var(--teal), var(--amber)); border-radius: inherit; }
+    .bar-fill { height: 100%; width: calc(var(--score) / 5 * 100%); background: linear-gradient(90deg, var(--teal), var(--amber)); border-radius: inherit; transform-origin: left; transform: scaleX(0); transition: transform .9s cubic-bezier(.2, .8, .2, 1); transition-delay: var(--delay, 0s); }
+    .ranking-card.is-visible .bar-fill, .rank-row.is-visible .bar-fill { transform: scaleX(1); }
     .score-pill {
       display: inline-flex;
       align-items: center;
@@ -159,6 +167,21 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 22px;
+    }
+    .panel, .mini-card, .detail-row, .callout, table, .svg-card, .kpi {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .68s ease, transform .68s cubic-bezier(.22, .8, .28, 1), box-shadow .25s ease, border-color .25s ease;
+      transition-delay: var(--delay, 0s);
+    }
+    .panel.is-visible, .mini-card.is-visible, .detail-row.is-visible, .callout.is-visible, table.is-visible, .svg-card.is-visible, .kpi.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .panel:hover, .mini-card:hover, .detail-row:hover, .kpi:hover {
+      transform: translateY(-3px);
+      border-color: #bdd5d5;
+      box-shadow: 0 12px 28px rgba(23, 32, 44, .08);
     }
     .panel h3 { margin: 0 0 10px; font-size: 20px; }
     .panel p { margin: 8px 0; color: var(--muted); }
@@ -220,6 +243,17 @@
       padding: 18px;
       min-height: 620px;
     }
+    #radar svg polygon[data-series] {
+      opacity: 0;
+      transform-origin: center;
+    }
+    .svg-card.is-visible #radar svg polygon[data-series] {
+      animation: radarIn .9s cubic-bezier(.2, .8, .2, 1) forwards;
+      animation-delay: var(--radar-delay, .12s);
+    }
+    .svg-card.is-visible #radar svg polygon[data-series]:nth-of-type(7) { animation-delay: .18s; }
+    .svg-card.is-visible #radar svg polygon[data-series]:nth-of-type(8) { animation-delay: .30s; }
+    .svg-card.is-visible #radar svg polygon[data-series]:nth-of-type(9) { animation-delay: .42s; }
     .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     .legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: var(--c); }
@@ -237,6 +271,14 @@
     .risk-list { margin: 0; padding-left: 20px; }
     .risk-list li { margin: 10px 0; }
     .small { color: var(--muted); font-size: 13px; }
+    @keyframes introUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes radarIn {
+      from { opacity: 0; transform: scale(.88); }
+      to { opacity: 1; transform: scale(1); }
+    }
     @media (max-width: 920px) {
       .hero-grid, .grid-2, .badcase { grid-template-columns: 1fr; }
       .detail-list, .grid-4 { grid-template-columns: 1fr; }
@@ -253,6 +295,20 @@
       .kpis { grid-template-columns: 1fr; }
       .rank-row { grid-template-columns: 58px 1fr 56px; }
       th, td { padding: 10px 11px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+      .panel, .mini-card, .detail-row, .callout, table, .svg-card, .kpi {
+        opacity: 1;
+        transform: none;
+      }
+      .bar-fill { transform: none; }
+      #radar svg polygon[data-series] { opacity: 1; transform: none; }
     }
     @media print {
       body { background: #fff; }
@@ -657,7 +713,7 @@
       });
       radarModels.forEach(model => {
         const pts = dims.map((dim, i) => point(dimensionMap[dim][model], i).join(",")).join(" ");
-        svg += `<polygon points="${pts}" fill="${colors[model]}16" stroke="${colors[model]}" stroke-width="3" stroke-linejoin="round" />`;
+        svg += `<polygon data-series="true" points="${pts}" fill="${colors[model]}16" stroke="${colors[model]}" stroke-width="3" stroke-linejoin="round" />`;
       });
       svg += `<g transform="translate(625, 34)">`;
       radarModels.forEach((model, i) => {
@@ -678,6 +734,52 @@
     renderPromptTable();
     renderMatchTable();
     renderRadar();
+
+    function setupMotion() {
+      const targets = [...document.querySelectorAll(".ranking-card, .rank-row, .kpi, .panel, .mini-card, .detail-row, .callout, table, .svg-card")];
+      targets.forEach((el, index) => {
+        el.style.setProperty("--delay", `${Math.min((index % 7) * 0.055, .32)}s`);
+      });
+      const reveal = el => {
+        el.classList.add("is-visible");
+        if (el.classList.contains("kpi")) animateKpi(el);
+      };
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+        targets.forEach(reveal);
+        return;
+      }
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          reveal(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: .12, rootMargin: "0px 0px -8% 0px" });
+      targets.forEach(el => observer.observe(el));
+    }
+
+    function animateKpi(card) {
+      const num = card.querySelector(".num");
+      if (!num || num.dataset.animated === "true") return;
+      const raw = num.textContent.trim();
+      if (!/^\d+$/.test(raw)) {
+        num.dataset.animated = "true";
+        return;
+      }
+      const end = Number(raw);
+      const start = performance.now();
+      const duration = 800;
+      num.dataset.animated = "true";
+      const tick = now => {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        num.textContent = String(Math.round(end * eased));
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    setupMotion();
   </script>
 </body>
 </html>
