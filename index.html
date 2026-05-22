@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>音视频评测汇总报告 - 课程作业汇报版</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --ink: #17202c;
+      --muted: #657186;
+      --line: #d9e0e8;
+      --panel: #ffffff;
+      --panel2: #eef6f5;
+      --teal: #119c9b;
+      --teal-dark: #0b6869;
+      --amber: #d99a22;
+      --coral: #c85a4a;
+      --green: #4a8b57;
+      --shadow: 0 18px 45px rgba(23, 32, 44, .09);
+      --radius: 8px;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.68;
+    }
+    a { color: inherit; }
+    .page { max-width: 1180px; margin: 0 auto; padding: 28px 22px 64px; }
+    .source-top {
+      padding: 0 0 18px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+      border-bottom: 1px solid var(--line);
+    }
+    .source-top a {
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
+    .source-top a:hover { color: var(--teal-dark); }
+    .hero {
+      min-height: 86vh;
+      display: grid;
+      align-content: center;
+      gap: 34px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr);
+      gap: 42px;
+      align-items: center;
+    }
+    .title-block h1 {
+      margin: 0;
+      font-size: clamp(38px, 7vw, 82px);
+      line-height: .98;
+      letter-spacing: 0;
+      max-width: 860px;
+    }
+    .title-block p {
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 760px;
+    }
+    .thesis {
+      margin-top: 28px;
+      padding-left: 18px;
+      border-left: 5px solid var(--teal);
+      font-size: 23px;
+      line-height: 1.45;
+      font-weight: 720;
+      max-width: 820px;
+    }
+    .source-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .ranking-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .ranking-card h2 { margin: 0 0 16px; font-size: 20px; }
+    .rank-row {
+      display: grid;
+      grid-template-columns: 76px 1fr 62px;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid #edf1f5;
+    }
+    .rank-row:first-of-type { border-top: 0; }
+    .rank-row strong { font-size: 18px; }
+    .bar-track { height: 10px; background: #edf2f3; border-radius: 999px; overflow: hidden; margin-top: 7px; }
+    .bar-fill { height: 100%; width: calc(var(--score) / 5 * 100%); background: linear-gradient(90deg, var(--teal), var(--amber)); border-radius: inherit; }
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: #e8f5f4;
+      color: var(--teal-dark);
+      font-weight: 780;
+    }
+    .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 116px;
+    }
+    .kpi .num { display: block; font-size: 32px; font-weight: 820; line-height: 1.05; }
+    .kpi .label { color: var(--muted); font-size: 13px; }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: 0 -22px;
+      padding: 10px 22px;
+      background: rgba(246, 248, 251, .92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    nav a {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      margin-right: 18px;
+      padding: 5px 0;
+    }
+    nav a:hover { color: var(--teal-dark); }
+    section { padding: 58px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 64px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    .section-head h2 { margin: 0; font-size: clamp(26px, 3.2vw, 42px); line-height: 1.12; }
+    .section-head p { margin: 0; color: var(--muted); max-width: 560px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+    .panel h3 { margin: 0 0 10px; font-size: 20px; }
+    .panel p { margin: 8px 0; color: var(--muted); }
+    .mini-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .mini-card h3, .mini-card h4 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    .mini-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .detail-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .detail-row {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .detail-row h3 { margin: 0 0 6px; font-size: 18px; }
+    .detail-row p { margin: 0; color: var(--muted); font-size: 14px; }
+    .callout {
+      background: #fff8e8;
+      border: 1px solid #efd497;
+      border-left: 5px solid var(--amber);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    th, td { padding: 12px 13px; border-bottom: 1px solid #e8edf2; text-align: left; vertical-align: top; }
+    th { background: #eef3f5; font-size: 13px; color: #3c4654; }
+    tr:last-child td { border-bottom: 0; }
+    .numcell { font-variant-numeric: tabular-nums; font-weight: 760; }
+    .heat { background: rgba(17, 156, 155, var(--heat)); }
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--line);
+      background: #f7fafb;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      color: #475569;
+      white-space: nowrap;
+    }
+    .winner { color: var(--teal-dark); font-weight: 800; }
+    .weak { color: var(--coral); font-weight: 760; }
+    .svg-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      min-height: 620px;
+    }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: var(--c); }
+    .score-rule { display: grid; grid-template-columns: 52px 96px 1fr; gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid #edf1f5; }
+    .score-rule:first-child { border-top: 0; }
+    .big-num { font-size: 34px; line-height: 1; font-weight: 820; color: var(--teal-dark); }
+    .model-card h3 { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .model-card ul { margin: 12px 0 0; padding-left: 18px; color: var(--muted); }
+    .model-card li { margin: 7px 0; }
+    .badcase {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 20px;
+    }
+    .risk-list { margin: 0; padding-left: 20px; }
+    .risk-list li { margin: 10px 0; }
+    .small { color: var(--muted); font-size: 13px; }
+    @media (max-width: 920px) {
+      .hero-grid, .grid-2, .badcase { grid-template-columns: 1fr; }
+      .detail-list, .grid-4 { grid-template-columns: 1fr; }
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media (max-width: 560px) {
+      .page { padding: 18px 14px 44px; }
+      nav { margin: 0 -14px; padding-inline: 14px; }
+      .hero { min-height: auto; padding: 34px 0 38px; }
+      .kpis { grid-template-columns: 1fr; }
+      .rank-row { grid-template-columns: 58px 1fr 56px; }
+      th, td { padding: 10px 11px; }
+    }
+    @media print {
+      body { background: #fff; }
+      nav { display: none; }
+      .page { max-width: none; padding: 0; }
+      .hero { min-height: auto; padding: 30px 0; }
+      section { break-inside: avoid; padding: 24px 0; }
+      .panel, .ranking-card, .kpi, .svg-card, table { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="source-top">
+      资料来源：
+      <a href="file:///Users/dudu/Desktop/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%AF%84%E6%B5%8B%E6%8A%A5%E5%91%8A-PALM.pdf" target="_blank" rel="noopener">《音视频评测报告-PALM.pdf》</a>
+      <a href="file:///Users/dudu/Library/Application%20Support/Claude/local-agent-mode-sessions/711c0569-e060-46c1-98aa-4b31d1ba9f7d/92ef8475-a538-4737-bfff-42ff3614244e/local_f4d98275-fbf6-4c0e-b287-511cec54b5ee/uploads/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%AF%84%E6%B5%8B%E8%A7%84%E5%88%99%E6%96%87%E6%A1%A3.pdf" target="_blank" rel="noopener">《音视频评测规则文档.pdf》</a>
+      <a href="file:///Users/dudu/Library/Application%20Support/Claude/local-agent-mode-sessions/711c0569-e060-46c1-98aa-4b31d1ba9f7d/92ef8475-a538-4737-bfff-42ff3614244e/local_f4d98275-fbf6-4c0e-b287-511cec54b5ee/uploads/%E9%9F%B3%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE%E9%9B%86.xlsx" target="_blank" rel="noopener">《音视频数据集.xlsx》</a>
+    </div>
+    <header class="hero">
+      <div class="hero-grid">
+        <div class="title-block">
+          <h1>音视频一体化生成模型评测汇总报告</h1>
+          <p>课程作业汇报版。依据《音视频评测报告-PALM.pdf》整理，使用《音视频评测规则文档.pdf》和《音视频数据集.xlsx》补充说明评测规则、样本结构与原始评分依据。</p>
+          <div class="thesis">一句话结论：四款模型形成“一超一强两追赶”格局，即梦综合领先，可灵稳定第二，Happy Horse 音频和上限突出但波动大，Vidu 更适合低成本入门。</div>
+          <div class="source-note">数据口径：排名、均分、场景分与市场结论以 PALM 评测报告为准；Excel 数据集用于说明 42 个 prompt、10 个维度与原始标注结构。</div>
+        </div>
+        <aside class="ranking-card" aria-label="综合排名概览">
+          <h2>综合能力排名</h2>
+          <div id="heroRanking"></div>
+        </aside>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span class="num">168</span><span class="label">标准化测试样本<br>4 模型 x 7 场景 x 3 方向 x 2 难度</span></div>
+        <div class="kpi"><span class="num">10</span><span class="label">评分维度<br>画面、音频、音画同步</span></div>
+        <div class="kpi"><span class="num">7</span><span class="label">业务场景<br>数字人、音乐、宠物、体育等</span></div>
+        <div class="kpi"><span class="num">5+2</span><span class="label">人员配置<br>5 名标注员 + 2 名质检员</span></div>
+        <div class="kpi"><span class="num">1-5</span><span class="label">评分锚点<br>从无价值到非常满意</span></div>
+      </div>
+    </header>
+
+    <nav aria-label="页面导航">
+      <a href="#context">背景目标</a>
+      <a href="#method">评测方法</a>
+      <a href="#overall">综合排名</a>
+      <a href="#model-detail">模型画像</a>
+      <a href="#dimension">十维能力</a>
+      <a href="#scene">场景适配</a>
+      <a href="#stability">复杂指令</a>
+      <a href="#risk">低分归因</a>
+      <a href="#market">市场选型</a>
+      <a href="#conclusion">结论展望</a>
+    </nav>
+
+    <section id="context">
+      <div class="section-head">
+        <h2>背景、目标与竞品选择</h2>
+        <p>评测不是只做排名，而是要回答“谁更强、强在哪里、适合什么业务”的完整问题。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>为什么要评测音视频一体化模型</h3>
+          <p>报告指出，Sora 之后视频生成从“无声画面”进入“原生音轨 + 人物说话 + 口型同步 + 环境音效”的一体化阶段。不同模型可能画面强但声音弱，也可能音画对齐但情绪表达不足，因此需要拆到具体维度做横向比较。</p>
+          <p>本次评测的价值在于把感性的“效果好不好”转成可量化、可追溯、可用于选型和迭代的分析框架。</p>
+        </div>
+        <div class="panel">
+          <h3>评测要回答的三个问题</h3>
+          <div class="score-rule"><div class="big-num">1</div><strong>综合能力对比</strong><span>用统一的多维评分得出四款模型的整体梯队，回答“谁的综合质量更高”。</span></div><div class="score-rule"><div class="big-num">2</div><strong>场景适配性分析</strong><span>拆到 7 大业务场景，判断不同模型在哪些场景更强、哪些场景更容易翻车。</span></div><div class="score-rule"><div class="big-num">3</div><strong>业务落地参考</strong><span>把质量结论转成选型建议，服务直播带货、广告制作、内容创作、游戏宣发等场景。</span></div>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:18px">
+        <div class="mini-card"><h3>第三方榜单</h3><p>参考 Artificial Analysis 与 J AI Portal 的 Text-to-Video Leaderboard，保证竞品选择具有外部代表性。</p></div><div class="mini-card"><h3>创作者测评</h3><p>补充 B 站、抖音、YouTube 等平台近两个月热门 AI 视频测评和评论区体验。</p></div><div class="mini-card"><h3>市场覆盖</h3><p>最终选择即梦、可灵、Happy Horse、Vidu，覆盖国内主流音视频一体化生成厂商与不同市场定位。</p></div>
+      </div>
+    </section>
+
+    <section id="method">
+      <div class="section-head">
+        <h2>评测方法</h2>
+        <p>通过统一输入条件和多维评分体系，让四个模型在公平、可复现的条件下进行横向对比。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>数据集设计</h3>
+          <p>数据来源为文生视频。每条视频统一为 16:9 画幅、1080P 分辨率、5 秒时长。</p>
+          <p>覆盖 7 大业务场景，每个场景设置 3 个方向，每个方向包含简化版 prompt 和复杂版 prompt，用于观察模型在指令复杂度上升时的稳定性。</p>
+          <p class="small">Excel 原始表共 422 行，展开后对应 42 个 prompt x 4 个模型 x 10 个评分维度。</p>
+          <div class="callout" style="margin-top:16px"><strong>样本拆法：</strong>7 个场景 x 3 个方向 x 2 个难度 = 42 个 prompt；每个 prompt 分别由 4 个模型生成，形成 168 条可比较样本。</div>
+        </div>
+        <div class="panel">
+          <h3>评分锚点</h3>
+          <div class="score-rule"><div class="big-num">5</div><strong>非常满意</strong><span>内容正确且满足通用规则，音视频质量完美，可直接用于实际场景。</span></div><div class="score-rule"><div class="big-num">4</div><strong>满意</strong><span>答案正确，视频或音频存在轻微瑕疵，但仍可用于实际场景。</span></div><div class="score-rule"><div class="big-num">3</div><strong>部分满意</strong><span>不影响整体观看和理解，但内容有部分错误，错误不超过 50%。</span></div><div class="score-rule"><div class="big-num">2</div><strong>微弱价值</strong><span>内容问题较多，影响观看和理解，使用前需要大量人工修改。</span></div><div class="score-rule"><div class="big-num">1</div><strong>无价值</strong><span>内容完全不可用，严重跑题或音视频崩坏。</span></div>
+        </div>
+      </div>
+      <div class="section-head" style="margin-top:30px">
+        <h2 style="font-size:28px">场景分支拆解</h2>
+        <p>每个场景不是单一 prompt，而是拆成 3 个业务方向，再分别设置简化版和复杂版。</p>
+      </div>
+      <table>
+        <thead><tr><th>场景</th><th>3 个方向</th><th>主要考察点</th></tr></thead>
+        <tbody>
+          <tr><td><strong>宠物</strong></td><td>动物间交互、宠物吃播、与人的交互</td><td>看主体稳定、真实质感、动物声音和互动动作。</td></tr><tr><td><strong>数字人</strong></td><td>直播带货、虚拟偶像 VTuber、新闻播报</td><td>看口型同步、人声清晰、台词遵循和播报稳定性。</td></tr><tr><td><strong>食品餐饮</strong></td><td>烹饪、食品广告、吃播</td><td>看食物质感、环境氛围、动作音效和画面美感。</td></tr><tr><td><strong>游戏</strong></td><td>NPC 交互、使用道具、宣传 CG</td><td>看风格化画面、动作连续性、道具响应和游戏音效。</td></tr><tr><td><strong>体育竞技</strong></td><td>田径、游泳、篮球</td><td>看高速运动、物理合理性、多人主体和场景音效。</td></tr><tr><td><strong>音乐</strong></td><td>吉他独奏、音乐 MV、音乐节现场</td><td>看节奏、演奏动作、舞台氛围、声音和画面统一。</td></tr><tr><td><strong>多人交互</strong></td><td>情绪交互、冲突/动作戏、教学问答</td><td>看多人画面合理性、角色发声对应和对话/动作时序。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="overall">
+      <div class="section-head">
+        <h2>综合排名</h2>
+        <p>即梦以 4.71 的维度均分领先，可灵与第二梯队拉开距离，整体呈现清晰梯队。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <table id="leaderboardTable"></table>
+        </div>
+        <div class="panel">
+          <h3>横向对比要点</h3>
+          <ul class="risk-list">
+            <li><strong>即梦最稳：</strong>标准差 2.91，为四款模型最低，说明强度与一致性兼具。</li>
+            <li><strong>可灵稳定第二：</strong>综合分 44.69，适合承担专业创作中的可靠备选。</li>
+            <li><strong>Happy Horse 波动最大：</strong>标准差 4.64，上限高但下限较低。</li>
+            <li><strong>Vidu 均衡偏弱：</strong>综合 42.17，优势更多来自低成本定位，而非质量领先。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="model-detail">
+      <div class="section-head">
+        <h2>四款模型画像拆解</h2>
+        <p>同一份排名背后，四个模型的商业定位和风险点并不一样，需要拆成“优势、适配人群、短板”来看。</p>
+      </div>
+      <div class="detail-list">
+        <div class="detail-row"><h3>即梦 - 强且稳的全场景首选</h3><p><strong>优势：</strong>10 维全胜、7 场景全冠军，标准差最低。适合对稳定交付、规模化产出和性价比都有要求的商业场景。</p><p style="margin-top:8px"><strong>注意：</strong>后续可补强极致低价入口和文字细节渲染。</p></div><div class="detail-row"><h3>可灵 - 复杂创作的专业备选</h3><p><strong>优势：</strong>综合第二，复杂 prompt 下反而提升 +0.08，说明复杂分镜、长指令和专业创作可控性较突出。</p><p style="margin-top:8px"><strong>注意：</strong>价格偏高，画面表现力和文字细节仍需继续提升。</p></div><div class="detail-row"><h3>Happy Horse - 音频和速度取向的细分工具</h3><p><strong>优势：</strong>音画同步 4.83、音频质量 4.64，多人口播和社媒对话有优势，但标准差最高。</p><p style="margin-top:8px"><strong>注意：</strong>画面遵循 3.67 是主要短板，批量商用前需要人工挑片。</p></div><div class="detail-row"><h3>Vidu - 低成本尝鲜入口</h3><p><strong>优势：</strong>整体质量偏弱但入门成本有吸引力，适合学生、轻度用户和低要求试水。</p><p style="margin-top:8px"><strong>注意：</strong>画面表现力、复杂时序和写实场景是向上拓展的主要阻碍。</p></div>
+      </div>
+    </section>
+
+    <section id="dimension">
+      <div class="section-head">
+        <h2>十维能力对比</h2>
+        <p>即梦 10 个维度全部第一；行业共性短板集中在画面遵循、现实合理性、画面表现力和音频呈现力。</p>
+      </div>
+      <div class="grid-2">
+        <div class="svg-card">
+          <div id="radar"></div>
+          <div class="legend" id="radarLegend"></div>
+        </div>
+        <div class="panel">
+          <h3>关键观察</h3>
+          <ul class="risk-list">
+            <li>即梦最强项为音画同步 4.90、运动质量 4.83、主体一致性 4.81。</li>
+            <li>Happy Horse 的关键短板是画面遵循 3.67，与第一梯队差距明显。</li>
+            <li>Vidu 在 8 个维度垫底，尤其画面表现力 3.62、音频呈现力 3.86 较弱。</li>
+            <li>全模型都在“指令理解 + 美学/情绪表达”上仍有提升空间。</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <table id="dimensionTable"></table>
+      </div>
+      <div class="section-head" style="margin-top:30px">
+        <h2 style="font-size:28px">维度组怎么读</h2>
+        <p>把 10 个维度合并成 4 类能力，更容易理解模型问题到底出在基础质量、指令理解还是表达层。</p>
+      </div>
+      <div class="grid-4">
+        <div class="mini-card"><h3>画面基础质量</h3><p><strong>画面质量、主体一致性、运动质量</strong></p><p style="margin-top:8px">决定视频是否清晰、稳定、动作可看，是商用交付的底线。</p></div><div class="mini-card"><h3>指令与现实约束</h3><p><strong>画面遵循、现实合理性</strong></p><p style="margin-top:8px">决定模型是否真正理解 prompt，以及物理、空间、行为是否可信。</p></div><div class="mini-card"><h3>表达与美学</h3><p><strong>画面表现力、音频呈现力</strong></p><p style="margin-top:8px">决定内容是否有氛围、情绪和故事感，也是报告指出的共性短板。</p></div><div class="mini-card"><h3>声音与同步</h3><p><strong>音画同步、音频质量、音频遵循</strong></p><p style="margin-top:8px">决定声音是否清楚、是否匹配画面事件，以及口型/动作是否对齐。</p></div>
+      </div>
+    </section>
+
+    <section id="scene">
+      <div class="section-head">
+        <h2>七大场景适配</h2>
+        <p>数字人是全体模型最成熟的场景，体育竞技是最难场景；即梦在 7 个场景中全部拿到冠军。</p>
+      </div>
+      <table id="sceneTable"></table>
+      <div class="grid-3" style="margin-top:18px">
+        <div class="callout"><strong>最成熟场景：数字人</strong><br>四模型整体得分最高，口型同步与人声清晰度较成熟，最适合规模化商用。</div>
+        <div class="callout"><strong>最困难场景：体育竞技</strong><br>高速运动、复杂物理交互与多人主体稳定性给所有模型带来压力。</div>
+        <div class="callout"><strong>可灵亮点：音乐场景</strong><br>音乐场景 4.77 紧贴即梦 4.82，是可灵最具竞争力的场景。</div>
+      </div>
+      <div class="detail-list">
+        <div class="detail-row"><h3>数字人 <span class="tag">最成熟</span></h3><p>即梦 4.95 最高，四模型整体得分都不低，说明口型同步、人声清晰和播报类任务相对成熟。</p></div><div class="detail-row"><h3>多人交互 <span class="tag">商业价值高</span></h3><p>需要同时处理多主体、台词、情绪和发声对应，是评测中最能暴露综合建模能力的场景之一。</p></div><div class="detail-row"><h3>音乐 <span class="tag">可灵亮点</span></h3><p>可灵 4.77 紧贴即梦 4.82，音乐场景是可灵最有竞争力的细分方向。</p></div><div class="detail-row"><h3>宠物 <span class="tag">写实难点</span></h3><p>Vidu 仅 3.88，问题集中在过饱和、清晰度不足、卡通化和动物声音不准。</p></div><div class="detail-row"><h3>食品餐饮 <span class="tag">即梦优势区</span></h3><p>即梦 4.92，领先幅度大，适合食品广告、吃播和带货素材生产。</p></div><div class="detail-row"><h3>游戏 <span class="tag">风格与动作并重</span></h3><p>需要兼顾 CG 质感、角色动作、道具响应和音效，整体难度中高。</p></div><div class="detail-row"><h3>体育竞技 <span class="tag">全行业最难</span></h3><p>高速运动和复杂物理交互对所有模型都是挑战，最高分也只有即梦 4.22。</p></div>
+      </div>
+    </section>
+
+    <section id="stability">
+      <div class="section-head">
+        <h2>视觉、音频与复杂指令</h2>
+        <p>四款模型音频能力普遍略强于视觉能力；复杂 prompt 下，可灵是唯一得分上升的模型。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>视觉能力 vs 音频能力</h3>
+          <table id="visualAudioTable"></table>
+        </div>
+        <div class="panel">
+          <h3>简化版 vs 复杂版 prompt</h3>
+          <table id="promptTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <section id="risk">
+      <div class="section-head">
+        <h2>低分与 Badcase 归因</h2>
+        <p>低分集中反映模型下限。Happy Horse 与 Vidu 的翻车概率明显高于第一梯队。</p>
+      </div>
+      <div class="badcase">
+        <div class="panel">
+          <h3>低分分布</h3>
+          <table>
+            <thead><tr><th>模型</th><th>≤2 分次数</th><th>风险判断</th></tr></thead>
+            <tbody>
+              <tr><td>Happy Horse</td><td class="numcell">15</td><td>最多，复杂动画指令和画面遵循容易翻车</td></tr>
+              <tr><td>Vidu</td><td class="numcell">11</td><td>宠物、篮球等写实和多人运动场景风险高</td></tr>
+              <tr><td>可灵</td><td class="numcell">3</td><td>整体可靠，偶发噪点与文字渲染问题</td></tr>
+              <tr><td>即梦</td><td class="numcell">1</td><td>几乎无崩坏，主要问题是少数文字细节不清</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <h3>高频短板维度</h3>
+          <ul class="risk-list">
+            <li><strong>画面遵循：</strong>全体低分 10 次，是最突出的共同风险。</li>
+            <li><strong>现实合理性：</strong>物理、空间、动作逻辑容易出现违和。</li>
+            <li><strong>音频呈现力：</strong>情绪和氛围表达仍偏泛化，难以稳定增强画面。</li>
+            <li><strong>文字和多人互动：</strong>黑板字、多人变形、多角色声音对应仍是难点。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="market">
+      <div class="section-head">
+        <h2>市场定位与选型建议</h2>
+        <p>模型选择不能只看质量，还要叠加成本、生态、稳定性与目标用户的容错空间。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel model-card"><h3><span>即梦</span><span class="tag">全能性价比之王</span></h3><ul><li>综合 47.12/50，10 维全胜、7 场景全冠军</li><li>数字人 4.95、食品餐饮 4.92，稳定性最好</li><li>适合中大型 MCN、品牌内容、电商口播与广告短剧</li></ul></div><div class="panel model-card"><h3><span>可灵</span><span class="tag">影视级精控</span></h3><ul><li>综合 44.69/50，稳定第二</li><li>复杂 prompt 唯一提升 +0.08，复杂指令解析突出</li><li>适合广告分镜、影视短片、音乐 MV 和专业创作者</li></ul></div><div class="panel model-card"><h3><span>Happy Horse</span><span class="tag">音频社媒利器</span></h3><ul><li>综合 43.12/50，音画同步 4.83、音频质量 4.64</li><li>多人口播与社媒对话有优势，但波动最大</li><li>适合重声音、求速度、能人工挑片的小团队</li></ul></div><div class="panel model-card"><h3><span>Vidu</span><span class="tag">低成本入门</span></h3><ul><li>综合 42.17/50，均衡但偏弱</li><li>音画同步尚可，画面表现力与复杂指令处理是瓶颈</li><li>适合预算敏感、低要求、轻度尝鲜用户</li></ul></div>
+      </div>
+      <div style="margin-top:20px">
+        <table id="matchTable"></table>
+      </div>
+    </section>
+
+    <section id="conclusion">
+      <div class="section-head">
+        <h2>结论与展望</h2>
+        <p>本次评测的最大价值，是把“哪个模型更好”拆解为“在哪个场景、哪个维度、哪类业务更合适”。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>核心结论回顾</h3>
+          <ol>
+            <li>即梦综合第一，10 维全胜、7 场景全冠军，最适合规模化商用。</li>
+            <li>可灵稳居第二，复杂指令解析能力突出，是专业创作的可靠备选。</li>
+            <li>Happy Horse 音频功底扎实，但受画面遵循与稳定性拖累。</li>
+            <li>Vidu 质量均衡偏弱，低价和无限生成更适合入门尝鲜。</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>后续优化方向</h3>
+          <ol>
+            <li>提升画面表现力与音频呈现力，补足美学和情绪表达。</li>
+            <li>针对多人交互构建细分数据集，解决多角色画面和声音对应。</li>
+            <li>增强复杂 prompt 鲁棒性，提升时序动作与多音效要求的拆解能力。</li>
+            <li>引入物理常识和仿真数据，降低穿模、浮空、光影逻辑错误。</li>
+          </ol>
+        </div>
+      </div>
+      <div class="section-head" style="margin-top:30px">
+        <h2 style="font-size:28px">可信度与边界</h2>
+        <p>汇报时可以主动说明方法论的可靠性，也说明哪些结论还需要后续扩样验证。</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>为什么可信</h3>
+          <div class="score-rule"><div class="big-num">1</div><strong>样本控制</strong><span>所有样本统一画幅 16:9、分辨率 1080P、时长 5 秒，减少规格差异对评分的影响。</span></div><div class="score-rule"><div class="big-num">2</div><strong>结构均衡</strong><span>7 大场景固定 3 个方向，每个方向设置简化版和复杂版 prompt，便于横向比较。</span></div><div class="score-rule"><div class="big-num">3</div><strong>评分可追溯</strong><span>10 个维度均采用 1-5 分锚点，汇总分可追溯到具体单条样本和维度原始评分。</span></div><div class="score-rule"><div class="big-num">4</div><strong>双重审核</strong><span>5 名标注员评分，2 名质检员二次审核，提升主观评分的一致性。</span></div>
+        </div>
+        <div class="panel">
+          <h3>还有哪些局限</h3>
+          <div class="score-rule"><div class="big-num">1</div><strong>样本量仍有限</strong><span>每个“场景 x 方向 x 难度”组合只有 1 条样本，后续可扩展到 3 条以上做方差分析。</span></div><div class="score-rule"><div class="big-num">2</div><strong>多人交互需继续拆分</strong><span>情绪交互、冲突动作、教学问答的失败原因不同，未来可单独建子集分析。</span></div><div class="score-rule"><div class="big-num">3</div><strong>美学维度有主观性</strong><span>画面表现力、音频呈现力容易受标注员审美影响，后续可加入双盲打分与异议复议。</span></div><div class="score-rule"><div class="big-num">4</div><strong>成本速度未入主排名</strong><span>本报告主排名只看质量，后续可建立“质量/成本/速度”综合指标。</span></div>
+        </div>
+      </div>
+      <div class="section-head" style="margin-top:30px">
+        <h2 style="font-size:28px">厂商优化优先级</h2>
+        <p>把 badcase 和维度短板转成可执行的模型迭代方向。</p>
+      </div>
+      <table>
+        <thead><tr><th>优先级</th><th>优化方向</th><th>建议动作</th></tr></thead>
+        <tbody>
+          <tr><td><strong>第一优先级</strong></td><td>画面表现力 + 音频呈现力</td><td>补充高美学样本、构图/色彩/运镜风格 token，并在音频侧增加情绪与节奏监督。</td></tr><tr><td><strong>第二优先级</strong></td><td>多人交互联合建模</td><td>构建多人物对话、冲突戏、教学场景数据，解决人物关系、声音数量和口型对应。</td></tr><tr><td><strong>第三优先级</strong></td><td>复杂 prompt 鲁棒性</td><td>强化长 prompt 拆解、时序对齐和多音效要求处理，可参考可灵复杂指令表现。</td></tr><tr><td><strong>第四优先级</strong></td><td>物理常识与真实感</td><td>引入物理仿真或常识约束，降低穿模、浮空、光影逻辑和动作违和。</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const data = {"leaderboard": [{"rank": "No.1", "model": "即梦", "vendor": "字节跳动", "mean50": 47.12, "mean5": 4.71, "total": 1979, "std": 2.91, "tag": "梯队领先", "role": "全能性价比之王"}, {"rank": "No.2", "model": "可灵", "vendor": "快手", "mean50": 44.69, "mean5": 4.47, "total": 1877, "std": 3.23, "tag": "稳定第二", "role": "影视级精控"}, {"rank": "No.3", "model": "Happy Horse", "vendor": "阿里巴巴", "mean50": 43.12, "mean5": 4.31, "total": 1811, "std": 4.64, "tag": "上限高、波动大", "role": "音频社媒利器"}, {"rank": "No.4", "model": "Vidu", "vendor": "生数科技 x 清华", "mean50": 42.17, "mean5": 4.22, "total": 1771, "std": 4.2, "tag": "均衡偏弱", "role": "低成本入门"}], "dimensions": [{"dim": "画面质量", "Happy Horse": 4.55, "即梦": 4.74, "可灵": 4.38, "Vidu": 4.26, "best": "即梦", "weak": "Vidu"}, {"dim": "画面遵循", "Happy Horse": 3.67, "即梦": 4.67, "可灵": 4.33, "Vidu": 4.07, "best": "即梦", "weak": "Happy Horse"}, {"dim": "主体一致性", "Happy Horse": 4.62, "即梦": 4.81, "可灵": 4.69, "Vidu": 4.55, "best": "即梦", "weak": "Vidu"}, {"dim": "运动质量", "Happy Horse": 4.55, "即梦": 4.83, "可灵": 4.71, "Vidu": 4.4, "best": "即梦", "weak": "Vidu"}, {"dim": "现实合理性", "Happy Horse": 4.0, "即梦": 4.64, "可灵": 4.29, "Vidu": 4.05, "best": "即梦", "weak": "Happy Horse"}, {"dim": "画面表现力", "Happy Horse": 4.07, "即梦": 4.48, "可灵": 4.19, "Vidu": 3.62, "best": "即梦", "weak": "Vidu"}, {"dim": "音画同步", "Happy Horse": 4.83, "即梦": 4.9, "可灵": 4.83, "Vidu": 4.71, "best": "即梦", "weak": "Vidu"}, {"dim": "音频质量", "Happy Horse": 4.64, "即梦": 4.86, "可灵": 4.62, "Vidu": 4.52, "best": "即梦", "weak": "Vidu"}, {"dim": "音频遵循", "Happy Horse": 4.19, "即梦": 4.64, "可灵": 4.5, "Vidu": 4.12, "best": "即梦", "weak": "Vidu"}, {"dim": "音频呈现力", "Happy Horse": 4.0, "即梦": 4.55, "可灵": 4.14, "Vidu": 3.86, "best": "即梦", "weak": "Vidu"}], "scenes": [{"scene": "数字人", "Happy Horse": 4.65, "即梦": 4.95, "可灵": 4.7, "Vidu": 4.43, "champion": "即梦"}, {"scene": "多人交互", "Happy Horse": 4.7, "即梦": 4.88, "可灵": 4.73, "Vidu": 4.4, "champion": "即梦"}, {"scene": "音乐", "Happy Horse": 4.57, "即梦": 4.82, "可灵": 4.77, "Vidu": 4.53, "champion": "即梦"}, {"scene": "宠物", "Happy Horse": 4.27, "即梦": 4.65, "可灵": 4.32, "Vidu": 3.88, "champion": "即梦"}, {"scene": "食品餐饮", "Happy Horse": 4.15, "即梦": 4.92, "可灵": 4.42, "Vidu": 4.37, "champion": "即梦"}, {"scene": "游戏", "Happy Horse": 4.13, "即梦": 4.55, "可灵": 4.22, "Vidu": 4.1, "champion": "即梦"}, {"scene": "体育竞技", "Happy Horse": 3.72, "即梦": 4.22, "可灵": 4.13, "Vidu": 3.8, "champion": "即梦"}], "visualAudio": [{"model": "即梦", "visual": 4.69, "audio": 4.74, "gap": -0.04, "feature": "音视频均衡，双优"}, {"model": "可灵", "visual": 4.43, "audio": 4.52, "gap": -0.09, "feature": "音频略强，画面表现力待提升"}, {"model": "Happy Horse", "visual": 4.24, "audio": 4.42, "gap": -0.18, "feature": "音频明显强于画面，画面遵循拖累"}, {"model": "Vidu", "visual": 4.16, "audio": 4.3, "gap": -0.14, "feature": "双项偏弱，画面表现力为最大短板"}], "promptStability": [{"model": "即梦", "simple": 4.76, "complex": 4.67, "change": -0.09, "note": "高位稳定，复杂指令仍保持高水准"}, {"model": "可灵", "simple": 4.43, "complex": 4.51, "change": 0.08, "note": "唯一正向，复杂指令解析能力突出"}, {"model": "Happy Horse", "simple": 4.39, "complex": 4.24, "change": -0.15, "note": "复杂指令下遵循能力明显下滑"}, {"model": "Vidu", "simple": 4.3, "complex": 4.13, "change": -0.17, "note": "衰减最大，复杂时序处理偏弱"}], "matchMatrix": [["专业内容团队 / 规模化商用", "即梦", "可灵", "能力 + 成本 + 生态三优，规模化首选"], ["影视短剧 / 复杂分镜创作", "可灵", "即梦", "复杂指令解析最强 + 导演共创背书"], ["直播带货 / 数字人电商", "即梦", "Happy Horse", "数字人 4.95 + 抖音电商闭环"], ["音频口播 / 多人对话社媒", "Happy Horse", "即梦", "音画同步强、出片快，但需要人工挑片"], ["音乐 MV / 演出内容", "即梦", "可灵", "音乐场景两者均强，分别为 4.82 / 4.77"], ["入门尝鲜 / 预算敏感", "Vidu", "即梦轻量档", "低价无限生成，适合做大用户基数"], ["体育 / 高速运动高难场景", "即梦", "可灵", "全行业最难，仅头部模型勉强达标，需人工质检"]]};
+    const models = ["Happy Horse", "即梦", "可灵", "Vidu"];
+    const colors = {"即梦": "#356bb7", "可灵": "#4aa36b", "Happy Horse": "#f28e2b", "Vidu": "#cf5d5b"};
+
+    function heat(score) {
+      const normalized = Math.max(0, Math.min(1, (score - 3.5) / 1.5));
+      return (0.10 + normalized * 0.28).toFixed(2);
+    }
+
+    function renderHeroRanking() {
+      const root = document.getElementById("heroRanking");
+      root.innerHTML = data.leaderboard.map(row => `
+        <div class="rank-row">
+          <span class="tag">${row.rank}</span>
+          <div><strong>${row.model}</strong><div class="bar-track"><div class="bar-fill" style="--score:${row.mean5}"></div></div></div>
+          <span class="score-pill">${row.mean5.toFixed(2)}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderLeaderboardTable() {
+      document.getElementById("leaderboardTable").innerHTML = `
+        <thead><tr><th>排名</th><th>模型</th><th>单条均分 /50</th><th>维度均分 /5</th><th>累计总分</th><th>标准差</th><th>评价</th></tr></thead>
+        <tbody>${data.leaderboard.map(r => `<tr><td>${r.rank}</td><td><strong>${r.model}</strong><br><span class="small">${r.vendor}</span></td><td class="numcell">${r.mean50.toFixed(2)}</td><td class="numcell">${r.mean5.toFixed(2)}</td><td class="numcell">${r.total}</td><td class="numcell">${r.std.toFixed(2)}</td><td>${r.tag}</td></tr>`).join("")}</tbody>
+      `;
+    }
+
+    function renderDimensionTable() {
+      const head = `<thead><tr><th>维度</th>${models.map(m => `<th>${m}</th>`).join("")}<th>最强</th><th>最弱</th></tr></thead>`;
+      const body = data.dimensions.map(row => `<tr>
+        <td><strong>${row.dim}</strong></td>
+        ${models.map(m => `<td class="numcell heat" style="--heat:${heat(row[m])}">${row[m].toFixed(2)}</td>`).join("")}
+        <td class="winner">${row.best}</td><td class="weak">${row.weak}</td>
+      </tr>`).join("");
+      document.getElementById("dimensionTable").innerHTML = head + `<tbody>${body}</tbody>`;
+    }
+
+    function renderSceneTable() {
+      const head = `<thead><tr><th>场景</th>${models.map(m => `<th>${m}</th>`).join("")}<th>场景冠军</th></tr></thead>`;
+      const body = data.scenes.map(row => `<tr>
+        <td><strong>${row.scene}</strong></td>
+        ${models.map(m => `<td class="numcell heat" style="--heat:${heat(row[m])}">${row[m].toFixed(2)}</td>`).join("")}
+        <td class="winner">${row.champion}</td>
+      </tr>`).join("");
+      document.getElementById("sceneTable").innerHTML = head + `<tbody>${body}</tbody>`;
+    }
+
+    function renderVisualAudioTable() {
+      document.getElementById("visualAudioTable").innerHTML = `
+        <thead><tr><th>模型</th><th>视觉能力</th><th>音频能力</th><th>视-音差值</th><th>特征</th></tr></thead>
+        <tbody>${data.visualAudio.map(r => `<tr><td><strong>${r.model}</strong></td><td class="numcell">${r.visual.toFixed(2)}</td><td class="numcell">${r.audio.toFixed(2)}</td><td class="numcell">${r.gap.toFixed(2)}</td><td>${r.feature}</td></tr>`).join("")}</tbody>
+      `;
+    }
+
+    function renderPromptTable() {
+      document.getElementById("promptTable").innerHTML = `
+        <thead><tr><th>模型</th><th>简化版</th><th>复杂版</th><th>变化</th><th>解读</th></tr></thead>
+        <tbody>${data.promptStability.map(r => `<tr><td><strong>${r.model}</strong></td><td class="numcell">${r.simple.toFixed(2)}</td><td class="numcell">${r.complex.toFixed(2)}</td><td class="numcell ${r.change >= 0 ? "winner" : "weak"}">${r.change > 0 ? "+" : ""}${r.change.toFixed(2)}</td><td>${r.note}</td></tr>`).join("")}</tbody>
+      `;
+    }
+
+    function renderMatchTable() {
+      document.getElementById("matchTable").innerHTML = `
+        <thead><tr><th>用户类型 / 业务需求</th><th>首选</th><th>备选</th><th>匹配依据</th></tr></thead>
+        <tbody>${data.matchMatrix.map(r => `<tr><td><strong>${r[0]}</strong></td><td class="winner">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody>
+      `;
+    }
+
+    function renderRadar() {
+      const width = 840, height = 700, cx = 410, cy = 365, maxR = 230;
+      const minScore = 3;
+      const maxScore = 5;
+      const dims = ["画面质量", "画面遵循", "主体一致性", "运动质量", "现实合理性", "画面表现力", "音画同步", "音频质量", "音频遵循", "音频呈现力"];
+      const radarModels = ["即梦", "可灵", "Happy Horse", "Vidu"];
+      const modelLabels = {"即梦": "即梦 Jimeng", "可灵": "可灵 Kling", "Happy Horse": "Happy Horse", "Vidu": "Vidu"};
+      const dimensionMap = Object.fromEntries(data.dimensions.map(row => [row.dim, row]));
+      const angleFor = i => -i * Math.PI * 2 / dims.length;
+      const point = (score, i) => {
+        const r = Math.max(0, Math.min(1, (score - minScore) / (maxScore - minScore))) * maxR;
+        const a = angleFor(i);
+        return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      };
+      const outerPoint = (ratio, i) => {
+        const r = ratio * maxR;
+        const a = angleFor(i);
+        return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      };
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="维度能力雷达图对比" style="width:100%;height:auto;display:block;">`;
+      svg += `<text x="${cx}" y="42" text-anchor="middle" font-size="21" font-weight="700" fill="#5f6f88">维度能力雷达图对比</text>`;
+      [3, 3.5, 4, 4.5, 5].forEach(tick => {
+        const ratio = (tick - minScore) / (maxScore - minScore);
+        const r = ratio * maxR;
+        const pts = dims.map((_, i) => {
+          const a = angleFor(i);
+          return `${cx + Math.cos(a) * r},${cy + Math.sin(a) * r}`;
+        }).join(" ");
+        svg += `<polygon points="${pts}" fill="none" stroke="#6d6d6d" stroke-opacity="${tick === 5 ? .9 : .28}" stroke-width="${tick === 5 ? 1.7 : 1}" />`;
+        svg += `<text x="${cx + r + 10}" y="${cy - 4}" font-size="14" fill="#333">${tick.toFixed(1)}</text>`;
+      });
+      dims.forEach((dim, i) => {
+        const [x, y] = outerPoint(1, i);
+        const [lx, ly] = outerPoint(1.16, i);
+        svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#6d6d6d" stroke-opacity=".24" stroke-width="1" />`;
+        svg += `<text x="${lx}" y="${ly}" text-anchor="${lx < cx - 14 ? "end" : lx > cx + 14 ? "start" : "middle"}" dominant-baseline="middle" font-size="18" font-weight="650" fill="#223047">${dim}</text>`;
+      });
+      radarModels.forEach(model => {
+        const pts = dims.map((dim, i) => point(dimensionMap[dim][model], i).join(",")).join(" ");
+        svg += `<polygon points="${pts}" fill="${colors[model]}16" stroke="${colors[model]}" stroke-width="3" stroke-linejoin="round" />`;
+      });
+      svg += `<g transform="translate(625, 34)">`;
+      radarModels.forEach((model, i) => {
+        svg += `<line x1="0" y1="${i * 24}" x2="30" y2="${i * 24}" stroke="${colors[model]}" stroke-width="3" />`;
+        svg += `<text x="38" y="${i * 24 + 5}" font-size="14" font-weight="650" fill="#1f2937">${modelLabels[model]}</text>`;
+      });
+      svg += `</g>`;
+      svg += `</svg>`;
+      document.getElementById("radar").innerHTML = svg;
+      document.getElementById("radarLegend").innerHTML = "";
+    }
+
+    renderHeroRanking();
+    renderLeaderboardTable();
+    renderDimensionTable();
+    renderSceneTable();
+    renderVisualAudioTable();
+    renderPromptTable();
+    renderMatchTable();
+    renderRadar();
+  </script>
+</body>
+</html>
